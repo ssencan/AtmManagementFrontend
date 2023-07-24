@@ -284,6 +284,7 @@ function App() {
               label="ATM Name"
               type="text"
               fullWidth
+              value={atm.atmName}
               onChange={handleInputChange}
             />
             <TextField
@@ -292,6 +293,7 @@ function App() {
               label="Latitude"
               type="text"
               fullWidth
+              value={atm.latitude}
               onChange={handleInputChange}
             />
             <TextField
@@ -300,6 +302,7 @@ function App() {
               label="Longitude"
               type="text"
               fullWidth
+              value={atm.longitude}
               onChange={handleInputChange}
             />
             <TextField
@@ -308,6 +311,7 @@ function App() {
               label="City ID"
               type="text"
               fullWidth
+              value={atm.cityID}
               onChange={handleInputChange}
             />
             <TextField
@@ -316,6 +320,7 @@ function App() {
               label="District ID"
               type="text"
               fullWidth
+              value={atm.districtID}
               onChange={handleInputChange}
             />
           </DialogContent>
