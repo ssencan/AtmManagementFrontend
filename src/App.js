@@ -21,6 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
+import { red } from "@mui/material/colors";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
@@ -41,6 +42,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const DeleteButton = styled(Button)({
+  backgroundColor: "#ff0000", // kırmızı
+  "&:hover": {
+    backgroundColor: "#b30000", // üzerine gelindiğinde daha koyu bir kırmızı
+  },
+});
+
 function App() {
   const [atmData, setAtmData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -53,6 +61,7 @@ function App() {
     districtID: "",
     isActive: true,
   });
+  //const [selectedAtmId, setSelectedAtmId] = useState(null);
 
   useEffect(() => {
     fetchAtmData();
@@ -61,7 +70,8 @@ function App() {
   const fetchAtmData = async () => {
     try {
       const response = await axios.get("https://localhost:44334/api/Atm");
-      setAtmData(response.data);
+      const activeAtms = response.data.filter((atm) => atm.isActive);
+      setAtmData(activeAtms);
     } catch (atmGETerror) {
       console.error(atmGETerror);
     }
@@ -80,6 +90,21 @@ function App() {
       alert("ATM added successfully.");
       fetchAtmData();
       handleClose();
+    } catch (atmPOSTerror) {
+      console.error(atmPOSTerror);
+    }
+  };
+
+  const deleteAtm = async (id) => {
+    try {
+      const userConfirmation = window.confirm(
+        "Are you sure to delete selected ATM?"
+      );
+      if (userConfirmation) {
+        await axios.delete(`https://localhost:44334/api/Atm/${id}`);
+        alert("ATM deleted successfully.");
+        await fetchAtmData();
+      }
     } catch (atmPOSTerror) {
       console.error(atmPOSTerror);
     }
@@ -135,6 +160,14 @@ function App() {
                   <StyledTableCell>{item.longitude}</StyledTableCell>
                   <StyledTableCell>{item.cityName}</StyledTableCell>
                   <StyledTableCell>{item.districtName}</StyledTableCell>
+                  <StyledTableCell>
+                    <DeleteButton
+                      variant="contained"
+                      onClick={() => deleteAtm(item.id)}
+                    >
+                      Delete
+                    </DeleteButton>
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
