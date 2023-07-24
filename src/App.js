@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  IconButton,
   TextField,
   Table,
   TableBody,
@@ -15,19 +14,43 @@ import {
   TableHead,
   TableRow,
   Paper,
+  styled,
+  Container,
+  AppBar,
+  Toolbar,
+  Typography,
 } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  "&.MuiTableCell-head": {
+    backgroundColor: theme.palette.primary.dark,
+    color: theme.palette.common.white,
+  },
+  "&.MuiTableCell-body": {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  "&:hover": {
+    backgroundColor: theme.palette.action.selected,
+  },
+}));
 
 function App() {
   const [atmData, setAtmData] = useState([]);
   const [open, setOpen] = useState(false);
   const [atm, setAtm] = useState({
+    id: "",
     atmName: "",
-    latitude: "", // daha sonra parseFloat ile dönüştürülür
-    longitude: "", // daha sonra parseFloat ile dönüştürülür
-    cityID: "", // daha sonra parseInt ile dönüştürülür
-    districtID: "", // daha sonra parseInt ile dönüştürülür
+    latitude: "",
+    longitude: "",
+    cityID: "",
+    districtID: "",
     isActive: true,
   });
 
@@ -54,8 +77,9 @@ function App() {
         districtID: parseInt(atm.districtID),
         isActive: atm.isActive,
       });
-
+      alert("ATM added successfully.");
       fetchAtmData();
+      handleClose();
     } catch (atmPOSTerror) {
       console.error(atmPOSTerror);
     }
@@ -75,95 +99,104 @@ function App() {
 
   return (
     <Fragment>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ATM Name</TableCell>
-              <TableCell>Latitude</TableCell>
-              <TableCell>Longitude</TableCell>
-              <TableCell>City Name</TableCell>
-              <TableCell>District Name</TableCell>
-              <TableCell>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleOpen}
-                >
-                  Add ATM
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {atmData.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.atmName}</TableCell>
-                <TableCell>{item.latitude}</TableCell>
-                <TableCell>{item.longitude}</TableCell>
-                <TableCell>{item.cityName}</TableCell>
-                <TableCell>{item.districtName}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            ATM Management System
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <StyledTableRow>
+                <StyledTableCell>ATM Name</StyledTableCell>
+                <StyledTableCell>Latitude</StyledTableCell>
+                <StyledTableCell>Longitude</StyledTableCell>
+                <StyledTableCell>City Name</StyledTableCell>
+                <StyledTableCell>District Name</StyledTableCell>
+                <StyledTableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOpen}
+                  >
+                    Add ATM
+                  </Button>
+                </StyledTableCell>
+              </StyledTableRow>
+            </TableHead>
+            <TableBody>
+              {atmData.map((item, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell>{item.atmName}</StyledTableCell>
+                  <StyledTableCell>{item.latitude}</StyledTableCell>
+                  <StyledTableCell>{item.longitude}</StyledTableCell>
+                  <StyledTableCell>{item.cityName}</StyledTableCell>
+                  <StyledTableCell>{item.districtName}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add New ATM</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Enter ATM details.</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="atmName"
-            label="ATM Name"
-            type="text"
-            fullWidth
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="latitude"
-            label="Latitude"
-            type="text"
-            fullWidth
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="longitude"
-            label="Longitude"
-            type="text"
-            fullWidth
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="cityID"
-            label="City ID"
-            type="text"
-            fullWidth
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            name="districtID"
-            label="District ID"
-            type="text"
-            fullWidth
-            onChange={handleInputChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={addAtm} color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Dialog label="Add" open={open} onClose={handleClose}>
+          <DialogTitle>Add New ATM</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Enter ATM details.</DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="atmName"
+              label="ATM Name"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              margin="dense"
+              name="latitude"
+              label="Latitude"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              margin="dense"
+              name="longitude"
+              label="Longitude"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              margin="dense"
+              name="cityID"
+              label="City ID"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              margin="dense"
+              name="districtID"
+              label="District ID"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={addAtm} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
     </Fragment>
   );
 }
