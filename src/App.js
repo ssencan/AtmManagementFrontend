@@ -22,6 +22,7 @@ import {
   MenuItem,
   Select,
   FormControl,
+  FormHelperText,
   InputLabel,
 } from "@mui/material";
 import axios from "axios";
@@ -89,8 +90,8 @@ function App() {
       atmName: "",
       latitude: "",
       longitude: "",
-      cityID: "",
-      districtID: "",
+      cityName: "",
+      districtName: "",
       isActive: true,
     },
     validationSchema: atmValidationSchema,
@@ -329,40 +330,57 @@ function App() {
               }
               helperText={formik.touched.longitude && formik.errors.longitude}
             />
-            <FormControl fullWidth>
+            <FormControl
+              fullWidth
+              error={formik.touched.cityName && Boolean(formik.errors.cityName)}
+            >
               <InputLabel id="city-add-select-label">City</InputLabel>
               <Select
                 labelId="city-add-select-label"
-                name="cityID"
-                value={formik.values.cityID}
+                name="cityName"
+                value={formik.values.cityName}
                 onChange={async (e) => {
                   formik.handleChange(e);
                   await fetchDistricts(e.target.value);
                 }}
+                onBlur={formik.handleBlur}
               >
                 {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
+                  <MenuItem key={city.id} value={city.name}>
                     {city.name}
                   </MenuItem>
                 ))}
               </Select>
+              {formik.touched.cityName && formik.errors.cityName ? (
+                <FormHelperText>{formik.errors.cityName}</FormHelperText>
+              ) : null}
             </FormControl>
 
-            <FormControl fullWidth>
+            <FormControl
+              fullWidth
+              error={
+                formik.touched.districtName &&
+                Boolean(formik.errors.districtName)
+              }
+            >
               <InputLabel id="district-add-select-label">District</InputLabel>
               <Select
                 labelId="district-add-select-label"
-                name="districtID"
-                value={formik.values.districtID}
+                name="districtName"
+                value={formik.values.districtName || ""}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 disabled={!formik.values.cityID}
               >
                 {districts.map((district) => (
-                  <MenuItem key={district.id} value={district.id}>
+                  <MenuItem key={district.id} value={district.name}>
                     {district.name}
                   </MenuItem>
                 ))}
               </Select>
+              {formik.touched.districtName && formik.errors.districtName ? (
+                <FormHelperText>{formik.errors.districtName}</FormHelperText>
+              ) : null}
             </FormControl>
           </DialogContent>
           <DialogActions>
