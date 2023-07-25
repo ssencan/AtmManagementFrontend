@@ -27,6 +27,8 @@ import {
 import axios from "axios";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const atmValidationSchema = yup.object({
   atmName: yup.string("Enter ATM Name").required("ATM Name is required"),
@@ -154,11 +156,12 @@ function App() {
         districtID: parseInt(formik.values.districtID),
         isActive: formik.values.isActive,
       });
-      alert("ATM added successfully.");
+      toast.success("ATM added successfully.");
       fetchAtmData();
       handleCloseAdd();
     } catch (atmPOSTerror) {
       console.error(atmPOSTerror);
+      toast.error("Failed to add ATM.");
     }
   };
 
@@ -169,11 +172,12 @@ function App() {
       );
       if (userConfirmation) {
         await axios.delete(`https://localhost:44334/api/Atm/${id}`);
-        alert("ATM deleted successfully.");
+        toast.success("ATM deleted successfully.");
         fetchAtmData();
       }
     } catch (atmPOSTerror) {
       console.error(atmPOSTerror);
+      toast.error("Failed to delete ATM.");
     }
   };
   const updateAtm = async () => {
@@ -192,10 +196,11 @@ function App() {
       );
       console.log("Update response: ", response);
       await fetchAtmData();
-      alert("ATM updated successfully.");
+      toast.success("ATM updated successfully.");
       handleCloseUpdate();
     } catch (atmPuterror) {
       console.error(atmPuterror);
+      toast.error("Failed to update ATM.");
     }
   };
 
@@ -229,6 +234,7 @@ function App() {
 
   return (
     <Fragment>
+      <ToastContainer />
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
