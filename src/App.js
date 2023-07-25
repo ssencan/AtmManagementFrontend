@@ -86,6 +86,7 @@ function App() {
       const response = await axios.get("https://localhost:44334/api/Atm");
       const activeAtms = response.data.filter((atm) => atm.isActive);
       setAtmData(activeAtms);
+      //console.log("ATM data fetched: ", activeAtms);
     } catch (atmGETerror) {
       console.error(atmGETerror);
     }
@@ -146,17 +147,26 @@ function App() {
   };
   const updateAtm = async () => {
     try {
-      await axios.put("https://localhost:44334/api/Atm/UpdateAtm", {
-        id: atm.id,
-        atmName: atm.atmName,
-        latitude: parseFloat(atm.latitude),
-        longitude: parseFloat(atm.longitude),
-        cityID: parseInt(atm.cityID),
-        districtID: parseInt(atm.districtID),
-        isActive: atm.isActive,
-      });
+      const response = await axios.put(
+        "https://localhost:44334/api/Atm/UpdateAtm",
+        {
+          id: atm.id,
+          atmName: atm.atmName,
+          latitude: parseFloat(atm.latitude),
+          longitude: parseFloat(atm.longitude),
+          cityID: parseInt(atm.cityID),
+          districtID: parseInt(atm.districtID),
+          isActive: atm.isActive,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Update response: ", response);
+      await fetchAtmData();
       alert("ATM updated successfully.");
-      fetchAtmData();
       handleCloseUpdate();
     } catch (atmPuterror) {
       console.error(atmPuterror);
@@ -286,7 +296,7 @@ function App() {
               <Select
                 labelId="city-select-label"
                 name="CityID"
-                value={atm.cityName}
+                value={atm.cityID}
                 onChange={async (e) => {
                   handleCityChange(e);
                   await fetchDistricts(e.target.value);
@@ -305,7 +315,7 @@ function App() {
               <Select
                 labelId="district-select-label"
                 name="districtID"
-                value={atm.districtName}
+                value={atm.districtID}
                 onChange={handleInputChange}
               >
                 {districts.map((district) => (
