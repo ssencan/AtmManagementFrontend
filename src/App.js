@@ -25,6 +25,24 @@ import {
   InputLabel,
 } from "@mui/material";
 import axios from "axios";
+import * as yup from "yup";
+import { useFormik } from "formik";
+
+const atmValidationSchema = yup.object({
+  atmName: yup.string("Enter ATM Name").required("ATM Name is required"),
+  latitude: yup
+    .number("Enter valid Latitude")
+    .required("Latitude is required")
+    .min(-90, "Minimum latitude is -90")
+    .max(90, "Maximum latitude is 90"),
+  longitude: yup
+    .number("Enter valid Longitude")
+    .required("Longitude is required")
+    .min(-180, "Minimum longitude is -180")
+    .max(180, "Maximum longitude is 180"),
+  cityName: yup.string("Select City").required("City is required"),
+  districtName: yup.string("Select District").required("District is required"),
+});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
@@ -65,28 +83,41 @@ function App() {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [atm, setAtm] = useState({
-    id: "",
-    atmName: "",
-    latitude: "",
-    longitude: "",
-    cityID: "",
-    districtID: "",
-    isActive: true,
+  const formik = useFormik({
+    initialValues: {
+      id: "",
+      atmName: "",
+      latitude: "",
+      longitude: "",
+      cityID: "",
+      districtID: "",
+      isActive: true,
+    },
+    validationSchema: atmValidationSchema,
+    onSubmit: (values) => {
+      if (openAdd) {
+        addAtm(values);
+      } else if (openUpdate) {
+        updateAtm(values);
+      }
+    },
   });
 
   useEffect(() => {
     fetchAtmData();
     fetchCities();
-    fetchDistricts();
   }, []);
+  useEffect(() => {
+    if (formik.values.cityID) {
+      fetchDistricts(formik.values.cityID);
+    }
+  }, [formik.values.cityID]);
 
   const fetchAtmData = async () => {
     try {
       const response = await axios.get("https://localhost:44334/api/Atm");
       const activeAtms = response.data.filter((atm) => atm.isActive);
       setAtmData(activeAtms);
-      //console.log("ATM data fetched: ", activeAtms);
     } catch (atmGETerror) {
       console.error(atmGETerror);
     }
@@ -116,12 +147,12 @@ function App() {
   const addAtm = async () => {
     try {
       await axios.post("https://localhost:44334/api/Atm/CreateAtm", {
-        atmName: atm.atmName,
-        latitude: parseFloat(atm.latitude),
-        longitude: parseFloat(atm.longitude),
-        cityID: parseInt(atm.cityID),
-        districtID: parseInt(atm.districtID),
-        isActive: atm.isActive,
+        atmName: formik.values.atmName,
+        latitude: parseFloat(formik.values.latitude),
+        longitude: parseFloat(formik.values.longitude),
+        cityID: parseInt(formik.values.cityID),
+        districtID: parseInt(formik.values.districtID),
+        isActive: formik.values.isActive,
       });
       alert("ATM added successfully.");
       fetchAtmData();
@@ -150,18 +181,13 @@ function App() {
       const response = await axios.put(
         "https://localhost:44334/api/Atm/UpdateAtm",
         {
-          id: atm.id,
-          atmName: atm.atmName,
-          latitude: parseFloat(atm.latitude),
-          longitude: parseFloat(atm.longitude),
-          cityID: parseInt(atm.cityID),
-          districtID: parseInt(atm.districtID),
-          isActive: atm.isActive,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          id: formik.values.id,
+          atmName: formik.values.atmName,
+          latitude: parseFloat(formik.values.latitude),
+          longitude: parseFloat(formik.values.longitude),
+          cityID: parseInt(formik.values.cityID),
+          districtID: parseInt(formik.values.districtID),
+          isActive: formik.values.isActive,
         }
       );
       console.log("Update response: ", response);
@@ -174,15 +200,7 @@ function App() {
   };
 
   const resetForm = () => {
-    setAtm({
-      id: "",
-      atmName: "",
-      latitude: "",
-      longitude: "",
-      cityID: "",
-      districtID: "",
-      isActive: true,
-    });
+    formik.resetForm();
     setCities([]);
     setDistricts([]);
   };
@@ -195,7 +213,7 @@ function App() {
   const handleOpenUpdate = async (atmToUpdate) => {
     await fetchCities();
     await fetchDistricts(atmToUpdate.cityID);
-    setAtm(atmToUpdate);
+    formik.setValues(atmToUpdate);
     setOpenUpdate(true);
   };
 
@@ -207,15 +225,6 @@ function App() {
   const handleCloseUpdate = () => {
     setOpenUpdate(false);
     resetForm();
-  };
-
-  const handleInputChange = (e) => {
-    setAtm({ ...atm, [e.target.name]: e.target.value });
-  };
-  const handleCityChange = async (event) => {
-    const cityID = event.target.value;
-    await fetchDistricts(cityID);
-    setAtm({ ...atm, cityID: cityID });
   };
 
   return (
@@ -285,19 +294,27 @@ function App() {
             <TextField
               autoFocus
               margin="dense"
-              name="atmName"
-              label="ATM Name"
-              type="text"
+              id="atmName" // Replace with the name of the field
+              name="atmName" // Replace with the name of the field
+              label="ATM Name" // Replace with the label of the field
+              type="text" // Replace with the type of the field
               fullWidth
-              onChange={handleInputChange}
+              value={formik.values.atmName} // Replace "atmName" with the name of the field
+              onChange={formik.handleChange}
+              error={formik.touched.atmName && Boolean(formik.errors.atmName)} // Replace "atmName" with the name of the field
+              helperText={formik.touched.atmName && formik.errors.atmName} // Replace "atmName" with the name of the field
             />
+
             <TextField
               margin="dense"
               name="latitude"
               label="Latitude"
               type="text"
               fullWidth
-              onChange={handleInputChange}
+              value={formik.values.latitude}
+              onChange={formik.handleChange}
+              error={formik.touched.latitude && Boolean(formik.errors.latitude)}
+              helperText={formik.touched.latitude && formik.errors.latitude}
             />
             <TextField
               margin="dense"
@@ -305,16 +322,21 @@ function App() {
               label="Longitude"
               type="text"
               fullWidth
-              onChange={handleInputChange}
+              value={formik.values.longitude}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.longitude && Boolean(formik.errors.longitude)
+              }
+              helperText={formik.touched.longitude && formik.errors.longitude}
             />
             <FormControl fullWidth>
               <InputLabel id="city-add-select-label">City</InputLabel>
               <Select
                 labelId="city-add-select-label"
-                name="CityID"
-                value={atm.cityID}
+                name="cityID"
+                value={formik.values.cityID}
                 onChange={async (e) => {
-                  handleCityChange(e);
+                  formik.handleChange(e);
                   await fetchDistricts(e.target.value);
                 }}
               >
@@ -331,9 +353,9 @@ function App() {
               <Select
                 labelId="district-add-select-label"
                 name="districtID"
-                value={atm.districtID}
-                onChange={handleInputChange}
-                disabled={!atm.cityID}
+                value={formik.values.districtID}
+                onChange={formik.handleChange}
+                disabled={!formik.values.cityID}
               >
                 {districts.map((district) => (
                   <MenuItem key={district.id} value={district.id}>
@@ -347,7 +369,7 @@ function App() {
             <Button onClick={handleCloseAdd} color="primary">
               Cancel
             </Button>
-            <Button onClick={addAtm} color="primary">
+            <Button onClick={formik.handleSubmit} color="primary">
               Add
             </Button>
           </DialogActions>
@@ -364,8 +386,10 @@ function App() {
               label="ATM Name"
               type="text"
               fullWidth
-              value={atm.atmName}
-              onChange={handleInputChange}
+              value={formik.values.atmName}
+              onChange={formik.handleChange}
+              error={formik.touched.atmName && Boolean(formik.errors.atmName)}
+              helperText={formik.touched.atmName && formik.errors.atmName}
             />
             <TextField
               margin="dense"
@@ -373,8 +397,10 @@ function App() {
               label="Latitude"
               type="text"
               fullWidth
-              value={atm.latitude}
-              onChange={handleInputChange}
+              value={formik.values.latitude}
+              onChange={formik.handleChange}
+              error={formik.touched.latitude && Boolean(formik.errors.latitude)}
+              helperText={formik.touched.latitude && formik.errors.latitude}
             />
             <TextField
               margin="dense"
@@ -382,17 +408,21 @@ function App() {
               label="Longitude"
               type="text"
               fullWidth
-              value={atm.longitude}
-              onChange={handleInputChange}
+              value={formik.values.longitude}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.longitude && Boolean(formik.errors.longitude)
+              }
+              helperText={formik.touched.longitude && formik.errors.longitude}
             />
             <FormControl fullWidth>
               <InputLabel id="city-update-select-label">City</InputLabel>
               <Select
                 labelId="city-update-select-label"
-                name="CityID"
-                value={atm.cityID}
+                name="cityID"
+                value={formik.values.cityID}
                 onChange={async (e) => {
-                  handleCityChange(e);
+                  formik.handleChange(e);
                   await fetchDistricts(e.target.value);
                 }}
               >
@@ -410,8 +440,8 @@ function App() {
               <Select
                 labelId="district-update-select-label"
                 name="districtID"
-                value={atm.districtID}
-                onChange={handleInputChange}
+                value={formik.values.districtID}
+                onChange={formik.handleChange}
               >
                 {districts.map((district) => (
                   <MenuItem key={district.id} value={district.id}>
@@ -425,7 +455,7 @@ function App() {
             <Button onClick={handleCloseUpdate} color="primary">
               Cancel
             </Button>
-            <Button onClick={updateAtm} color="primary">
+            <Button onClick={formik.handleSubmit} color="primary">
               Update
             </Button>
           </DialogActions>
