@@ -19,9 +19,12 @@ import {
   AppBar,
   Toolbar,
   Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import axios from "axios";
-import { red } from "@mui/material/colors";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
@@ -60,6 +63,8 @@ function App() {
   const [atmData, setAtmData] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const [atm, setAtm] = useState({
     id: "",
     atmName: "",
@@ -69,10 +74,11 @@ function App() {
     districtID: "",
     isActive: true,
   });
-  //const [selectedAtmId, setSelectedAtmId] = useState(null);
 
   useEffect(() => {
     fetchAtmData();
+    fetchCities();
+    fetchDistricts();
   }, []);
 
   const fetchAtmData = async () => {
@@ -82,6 +88,27 @@ function App() {
       setAtmData(activeAtms);
     } catch (atmGETerror) {
       console.error(atmGETerror);
+    }
+  };
+
+  const fetchCities = async () => {
+    try {
+      const response = await axios.get("https://localhost:44334/api/City");
+      setCities(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchDistricts = async (cityId) => {
+    try {
+      const response = await axios.get("https://localhost:44334/api/District");
+      const cityDistricts = response.data.filter(
+        (district) => district.cityId === cityId
+      );
+      setDistricts(cityDistricts);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -136,11 +163,14 @@ function App() {
     }
   };
 
-  const handleOpenAdd = () => {
+  const handleOpenAdd = async () => {
+    await Promise.all([fetchCities(), fetchDistricts()]);
     setOpenAdd(true);
   };
 
-  const handleOpenUpdate = (atmToUpdate) => {
+  const handleOpenUpdate = async (atmToUpdate) => {
+    await fetchCities();
+    await fetchDistricts();
     setAtm(atmToUpdate);
     setOpenUpdate(true);
   };
@@ -155,6 +185,11 @@ function App() {
 
   const handleInputChange = (e) => {
     setAtm({ ...atm, [e.target.name]: e.target.value });
+  };
+  const handleCityChange = async (event) => {
+    const cityID = event.target.value;
+    await fetchDistricts(cityID);
+    setAtm({ ...atm, cityID: cityID });
   };
 
   return (
@@ -176,7 +211,7 @@ function App() {
                 <StyledTableCell>Longitude</StyledTableCell>
                 <StyledTableCell>City Name</StyledTableCell>
                 <StyledTableCell>District Name</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell colSpan={6}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -246,22 +281,40 @@ function App() {
               fullWidth
               onChange={handleInputChange}
             />
-            <TextField
-              margin="dense"
-              name="cityID"
-              label="City ID"
-              type="text"
-              fullWidth
-              onChange={handleInputChange}
-            />
-            <TextField
-              margin="dense"
-              name="districtID"
-              label="District ID"
-              type="text"
-              fullWidth
-              onChange={handleInputChange}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="city-select-label">City</InputLabel>
+              <Select
+                labelId="city-select-label"
+                name="CityID"
+                value={atm.cityName}
+                onChange={async (e) => {
+                  handleCityChange(e);
+                  await fetchDistricts(e.target.value);
+                }}
+              >
+                {cities.map((city) => (
+                  <MenuItem key={city.id} value={city.id}>
+                    {city.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel id="district-select-label">District</InputLabel>
+              <Select
+                labelId="district-select-label"
+                name="districtID"
+                value={atm.districtName}
+                onChange={handleInputChange}
+              >
+                {districts.map((district) => (
+                  <MenuItem key={district.id} value={district.id}>
+                    {district.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseAdd} color="primary">
@@ -337,5 +390,4 @@ function App() {
     </Fragment>
   );
 }
-
 export default App;
