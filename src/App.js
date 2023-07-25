@@ -19,12 +19,9 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
 import axios from "axios";
+import { red } from "@mui/material/colors";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
@@ -63,8 +60,6 @@ function App() {
   const [atmData, setAtmData] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
   const [atm, setAtm] = useState({
     id: "",
     atmName: "",
@@ -74,11 +69,10 @@ function App() {
     districtID: "",
     isActive: true,
   });
+  //const [selectedAtmId, setSelectedAtmId] = useState(null);
 
   useEffect(() => {
     fetchAtmData();
-    fetchCities();
-    fetchDistricts();
   }, []);
 
   const fetchAtmData = async () => {
@@ -86,30 +80,8 @@ function App() {
       const response = await axios.get("https://localhost:44334/api/Atm");
       const activeAtms = response.data.filter((atm) => atm.isActive);
       setAtmData(activeAtms);
-      //console.log("ATM data fetched: ", activeAtms);
     } catch (atmGETerror) {
       console.error(atmGETerror);
-    }
-  };
-
-  const fetchCities = async () => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/City");
-      setCities(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchDistricts = async (cityId) => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/District");
-      const cityDistricts = response.data.filter(
-        (district) => district.cityId === cityId
-      );
-      setDistricts(cityDistricts);
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -147,40 +119,28 @@ function App() {
   };
   const updateAtm = async () => {
     try {
-      const response = await axios.put(
-        "https://localhost:44334/api/Atm/UpdateAtm",
-        {
-          id: atm.id,
-          atmName: atm.atmName,
-          latitude: parseFloat(atm.latitude),
-          longitude: parseFloat(atm.longitude),
-          cityID: parseInt(atm.cityID),
-          districtID: parseInt(atm.districtID),
-          isActive: atm.isActive,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Update response: ", response);
-      await fetchAtmData();
+      await axios.put("https://localhost:44334/api/Atm/UpdateAtm", {
+        id: atm.id,
+        atmName: atm.atmName,
+        latitude: parseFloat(atm.latitude),
+        longitude: parseFloat(atm.longitude),
+        cityID: parseInt(atm.cityID),
+        districtID: parseInt(atm.districtID),
+        isActive: atm.isActive,
+      });
       alert("ATM updated successfully.");
+      fetchAtmData();
       handleCloseUpdate();
     } catch (atmPuterror) {
       console.error(atmPuterror);
     }
   };
 
-  const handleOpenAdd = async () => {
-    await Promise.all([fetchCities(), fetchDistricts()]);
+  const handleOpenAdd = () => {
     setOpenAdd(true);
   };
 
-  const handleOpenUpdate = async (atmToUpdate) => {
-    await fetchCities();
-    await fetchDistricts(atmToUpdate.cityID);
+  const handleOpenUpdate = (atmToUpdate) => {
     setAtm(atmToUpdate);
     setOpenUpdate(true);
   };
@@ -195,11 +155,6 @@ function App() {
 
   const handleInputChange = (e) => {
     setAtm({ ...atm, [e.target.name]: e.target.value });
-  };
-  const handleCityChange = async (event) => {
-    const cityID = event.target.value;
-    await fetchDistricts(cityID);
-    setAtm({ ...atm, cityID: cityID });
   };
 
   return (
@@ -291,40 +246,22 @@ function App() {
               fullWidth
               onChange={handleInputChange}
             />
-            <FormControl fullWidth>
-              <InputLabel id="city-add-select-label">City</InputLabel>
-              <Select
-                labelId="city-add-select-label"
-                name="CityID"
-                value={atm.cityID}
-                onChange={async (e) => {
-                  handleCityChange(e);
-                  await fetchDistricts(e.target.value);
-                }}
-              >
-                {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    {city.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <InputLabel id="district-add-select-label">District</InputLabel>
-              <Select
-                labelId="district-add-select-label"
-                name="districtID"
-                value={atm.districtID}
-                onChange={handleInputChange}
-              >
-                {districts.map((district) => (
-                  <MenuItem key={district.id} value={district.id}>
-                    {district.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <TextField
+              margin="dense"
+              name="cityID"
+              label="City ID"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
+            <TextField
+              margin="dense"
+              name="districtID"
+              label="District ID"
+              type="text"
+              fullWidth
+              onChange={handleInputChange}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseAdd} color="primary">
@@ -368,41 +305,24 @@ function App() {
               value={atm.longitude}
               onChange={handleInputChange}
             />
-            <FormControl fullWidth>
-              <InputLabel id="city-update-select-label">City</InputLabel>
-              <Select
-                labelId="city-update-select-label"
-                name="CityID"
-                value={atm.cityID}
-                onChange={async (e) => {
-                  handleCityChange(e);
-                  await fetchDistricts(e.target.value);
-                }}
-              >
-                {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    {city.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel id="district-update-select-label">
-                District
-              </InputLabel>
-              <Select
-                labelId="district-update-select-label"
-                name="districtID"
-                value={atm.districtID}
-                onChange={handleInputChange}
-              >
-                {districts.map((district) => (
-                  <MenuItem key={district.id} value={district.id}>
-                    {district.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <TextField
+              margin="dense"
+              name="cityID"
+              label="City ID"
+              type="text"
+              fullWidth
+              value={atm.cityID}
+              onChange={handleInputChange}
+            />
+            <TextField
+              margin="dense"
+              name="districtID"
+              label="District ID"
+              type="text"
+              fullWidth
+              value={atm.districtID}
+              onChange={handleInputChange}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseUpdate} color="primary">
@@ -417,4 +337,5 @@ function App() {
     </Fragment>
   );
 }
+
 export default App;
