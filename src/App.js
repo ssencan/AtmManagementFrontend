@@ -180,7 +180,7 @@ function App() {
 
   const handleOpenUpdate = async (atmToUpdate) => {
     await fetchCities();
-    await fetchDistricts();
+    await fetchDistricts(atmToUpdate.cityID);
     setAtm(atmToUpdate);
     setOpenUpdate(true);
   };
@@ -292,9 +292,9 @@ function App() {
               onChange={handleInputChange}
             />
             <FormControl fullWidth>
-              <InputLabel id="city-select-label">City</InputLabel>
+              <InputLabel id="city-add-select-label">City</InputLabel>
               <Select
-                labelId="city-select-label"
+                labelId="city-add-select-label"
                 name="CityID"
                 value={atm.cityID}
                 onChange={async (e) => {
@@ -311,9 +311,9 @@ function App() {
             </FormControl>
 
             <FormControl fullWidth>
-              <InputLabel id="district-select-label">District</InputLabel>
+              <InputLabel id="district-add-select-label">District</InputLabel>
               <Select
-                labelId="district-select-label"
+                labelId="district-add-select-label"
                 name="districtID"
                 value={atm.districtID}
                 onChange={handleInputChange}
@@ -368,24 +368,41 @@ function App() {
               value={atm.longitude}
               onChange={handleInputChange}
             />
-            <TextField
-              margin="dense"
-              name="cityID"
-              label="City ID"
-              type="text"
-              fullWidth
-              value={atm.cityID}
-              onChange={handleInputChange}
-            />
-            <TextField
-              margin="dense"
-              name="districtID"
-              label="District ID"
-              type="text"
-              fullWidth
-              value={atm.districtID}
-              onChange={handleInputChange}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="city-update-select-label">City</InputLabel>
+              <Select
+                labelId="city-update-select-label"
+                name="CityID"
+                value={atm.cityID}
+                onChange={async (e) => {
+                  handleCityChange(e);
+                  await fetchDistricts(e.target.value);
+                }}
+              >
+                {cities.map((city) => (
+                  <MenuItem key={city.id} value={city.id}>
+                    {city.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="district-update-select-label">
+                District
+              </InputLabel>
+              <Select
+                labelId="district-update-select-label"
+                name="districtID"
+                value={atm.districtID}
+                onChange={handleInputChange}
+              >
+                {districts.map((district) => (
+                  <MenuItem key={district.id} value={district.id}>
+                    {district.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseUpdate} color="primary">
