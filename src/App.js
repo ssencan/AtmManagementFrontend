@@ -30,6 +30,28 @@ import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const CustomSelect = ({ label, name, value, onChange, children }) => (
+  <FormControl fullWidth>
+    <InputLabel id={`${name}-label`}>{label}</InputLabel>
+    <Select
+      labelId={`${name}-label`}
+      name={name}
+      value={value}
+      onChange={onChange}
+      MenuProps={{
+        PaperProps: {
+          style: {
+            maxHeight: "230px",
+            width: "20ch",
+          },
+        },
+      }}
+    >
+      {children}
+    </Select>
+  </FormControl>
+);
+
 const atmValidationSchema = yup.object({
   atmName: yup.string("Enter ATM Name").required("ATM Name is required"),
   latitude: yup
@@ -300,15 +322,15 @@ function App() {
             <TextField
               autoFocus
               margin="dense"
-              id="atmName" // Replace with the name of the field
-              name="atmName" // Replace with the name of the field
-              label="ATM Name" // Replace with the label of the field
-              type="text" // Replace with the type of the field
+              id="atmName"
+              name="atmName"
+              label="ATM Name"
+              type="text"
               fullWidth
-              value={formik.values.atmName} // Replace "atmName" with the name of the field
+              value={formik.values.atmName}
               onChange={formik.handleChange}
-              error={formik.touched.atmName && Boolean(formik.errors.atmName)} // Replace "atmName" with the name of the field
-              helperText={formik.touched.atmName && formik.errors.atmName} // Replace "atmName" with the name of the field
+              error={formik.touched.atmName && Boolean(formik.errors.atmName)}
+              helperText={formik.touched.atmName && formik.errors.atmName}
             />
 
             <TextField
@@ -335,41 +357,36 @@ function App() {
               }
               helperText={formik.touched.longitude && formik.errors.longitude}
             />
-            <FormControl fullWidth>
-              <InputLabel id="city-add-select-label">City</InputLabel>
-              <Select
-                labelId="city-add-select-label"
-                name="cityID"
-                value={formik.values.cityID}
-                onChange={async (e) => {
-                  formik.handleChange(e);
-                  await fetchDistricts(e.target.value);
-                }}
-              >
-                {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    {city.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
 
-            <FormControl fullWidth>
-              <InputLabel id="district-add-select-label">District</InputLabel>
-              <Select
-                labelId="district-add-select-label"
-                name="districtID"
-                value={formik.values.districtID}
-                onChange={formik.handleChange}
-                disabled={!formik.values.cityID}
-              >
-                {districts.map((district) => (
-                  <MenuItem key={district.id} value={district.id}>
-                    {district.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <CustomSelect
+              label="city-add"
+              name="cityID"
+              value={formik.values.cityID}
+              onChange={async (e) => {
+                formik.handleChange(e);
+                await fetchDistricts(e.target.value);
+              }}
+            >
+              {cities.map((city) => (
+                <MenuItem key={city.id} value={city.id}>
+                  {city.name}
+                </MenuItem>
+              ))}
+            </CustomSelect>
+
+            <CustomSelect
+              label="district-add"
+              name="districtID"
+              value={formik.values.districtID}
+              onChange={formik.handleChange}
+              disabled={!formik.values.cityID}
+            >
+              {districts.map((district) => (
+                <MenuItem key={district.id} value={district.id}>
+                  {district.name}
+                </MenuItem>
+              ))}
+            </CustomSelect>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseAdd} color="primary">
@@ -421,41 +438,33 @@ function App() {
               }
               helperText={formik.touched.longitude && formik.errors.longitude}
             />
-            <FormControl fullWidth>
-              <InputLabel id="city-update-select-label">City</InputLabel>
-              <Select
-                labelId="city-update-select-label"
-                name="cityID"
-                value={formik.values.cityID}
-                onChange={async (e) => {
-                  formik.handleChange(e);
-                  await fetchDistricts(e.target.value);
-                }}
-              >
-                {cities.map((city) => (
-                  <MenuItem key={city.id} value={city.id}>
-                    {city.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel id="district-update-select-label">
-                District
-              </InputLabel>
-              <Select
-                labelId="district-update-select-label"
-                name="districtID"
-                value={formik.values.districtID}
-                onChange={formik.handleChange}
-              >
-                {districts.map((district) => (
-                  <MenuItem key={district.id} value={district.id}>
-                    {district.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <CustomSelect
+              label="city-update"
+              name="cityID"
+              value={formik.values.cityID}
+              onChange={async (e) => {
+                formik.handleChange(e);
+                await fetchDistricts(e.target.value);
+              }}
+            >
+              {cities.map((city) => (
+                <MenuItem key={city.id} value={city.id}>
+                  {city.name}
+                </MenuItem>
+              ))}
+            </CustomSelect>
+            <CustomSelect
+              label="district-update"
+              name="districtID"
+              value={formik.values.districtID}
+              onChange={formik.handleChange}
+            >
+              {districts.map((district) => (
+                <MenuItem key={district.id} value={district.id}>
+                  {district.name}
+                </MenuItem>
+              ))}
+            </CustomSelect>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseUpdate} color="primary">
