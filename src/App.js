@@ -30,7 +30,7 @@ import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const CustomSelect = ({ label, name, value, onChange, children }) => (
+const CustomSelect = ({ label, name, value, onChange, children, disabled }) => (
   <FormControl fullWidth>
     <InputLabel id={`${name}-label`}>{label}</InputLabel>
     <Select
@@ -38,6 +38,7 @@ const CustomSelect = ({ label, name, value, onChange, children }) => (
       name={name}
       value={value}
       onChange={onChange}
+      disabled={disabled}
       MenuProps={{
         PaperProps: {
           style: {
@@ -359,7 +360,7 @@ function App() {
             />
 
             <CustomSelect
-              label="city-add"
+              label="City"
               name="cityID"
               value={formik.values.cityID}
               onChange={async (e) => {
@@ -375,7 +376,7 @@ function App() {
             </CustomSelect>
 
             <CustomSelect
-              label="district-add"
+              label="District"
               name="districtID"
               value={formik.values.districtID}
               onChange={formik.handleChange}
@@ -439,7 +440,7 @@ function App() {
               helperText={formik.touched.longitude && formik.errors.longitude}
             />
             <CustomSelect
-              label="city-update"
+              label="City"
               name="cityID"
               value={formik.values.cityID}
               onChange={async (e) => {
@@ -454,7 +455,7 @@ function App() {
               ))}
             </CustomSelect>
             <CustomSelect
-              label="district-update"
+              label="District"
               name="districtID"
               value={formik.values.districtID}
               onChange={formik.handleChange}
