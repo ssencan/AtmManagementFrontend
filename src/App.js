@@ -40,7 +40,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-const MapComponent = () => {
+/* const MapComponent = () => {
   return (
     <MapContainer
       center={[51.505, -0.09]}
@@ -58,7 +58,16 @@ const MapComponent = () => {
       </Marker>
     </MapContainer>
   );
-};
+}; */
+
+const InfoRow = ({ label, value }) => (
+  <Typography component="div" variant="body2">
+    <Typography variant="body2" component="span" style={{ fontWeight: "bold" }}>
+      {label}:
+    </Typography>{" "}
+    {value}
+  </Typography>
+);
 
 const CustomSelect = ({ label, name, value, onChange, children, disabled }) => (
   <FormControl fullWidth>
@@ -297,11 +306,17 @@ function App() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          <Marker position={[40.989891586469625, 28.71540046609974]}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
+          {atmData.map((atm) => (
+            <Marker key={atm.id} position={[atm.latitude, atm.longitude]}>
+              <Popup>
+                <InfoRow label="Name" value={atm.atmName} />
+                <InfoRow label="City" value={atm.cityName} />
+                <InfoRow label="District" value={atm.districtName} />
+                <InfoRow label="Latitude" value={atm.latitude} />
+                <InfoRow label="Longitude" value={atm.longitude} />
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       </div>
       <ToastContainer />
