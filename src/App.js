@@ -31,6 +31,7 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Grid,
 } from "@mui/material";
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -288,29 +289,6 @@ function App() {
 
   return (
     <Fragment>
-      <div>
-        <MapContainer
-          center={[39.09014653873912, 35.56743804787035]}
-          zoom={6}
-          style={{ height: "100vh", width: "100%" }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          {atmData.map((atm) => (
-            <Marker key={atm.id} position={[atm.latitude, atm.longitude]}>
-              <Popup>
-                <InfoRow label="Name" value={atm.atmName} />
-                <InfoRow label="City" value={atm.cityName} />
-                <InfoRow label="District" value={atm.districtName} />
-                <InfoRow label="Latitude" value={atm.latitude} />
-                <InfoRow label="Longitude" value={atm.longitude} />
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
       <ToastContainer />
       <AppBar position="static">
         <Toolbar>
@@ -319,218 +297,243 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell>ATM Name</StyledTableCell>
-                <StyledTableCell>Latitude</StyledTableCell>
-                <StyledTableCell>Longitude</StyledTableCell>
-                <StyledTableCell>City Name</StyledTableCell>
-                <StyledTableCell>District Name</StyledTableCell>
-                <StyledTableCell colSpan={6}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleOpenAdd}
-                  >
-                    Add ATM
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {atmData.map((item, index) => (
-                <StyledTableRow key={index}>
-                  <StyledTableCell>{item.atmName}</StyledTableCell>
-                  <StyledTableCell>{item.latitude}</StyledTableCell>
-                  <StyledTableCell>{item.longitude}</StyledTableCell>
-                  <StyledTableCell>{item.cityName}</StyledTableCell>
-                  <StyledTableCell>{item.districtName}</StyledTableCell>
-                  <StyledTableCell>
-                    <DeleteButton
+      <Grid container style={{ height: "100vh" }}>
+        <Grid item xs={8} id="table-grid">
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <StyledTableRow>
+                  <StyledTableCell>ATM Name</StyledTableCell>
+                  <StyledTableCell>Latitude</StyledTableCell>
+                  <StyledTableCell>Longitude</StyledTableCell>
+                  <StyledTableCell>City Name</StyledTableCell>
+                  <StyledTableCell>District Name</StyledTableCell>
+                  <StyledTableCell colSpan={6}>
+                    <Button
                       variant="contained"
-                      onClick={() => deleteAtm(item.id)}
+                      color="primary"
+                      onClick={handleOpenAdd}
                     >
-                      Delete
-                    </DeleteButton>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <UpdateButton
-                      variant="contained"
-                      onClick={() => handleOpenUpdate(item)}
-                    >
-                      Update
-                    </UpdateButton>
+                      Add ATM
+                    </Button>
                   </StyledTableCell>
                 </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <Dialog label="Add" open={openAdd} onClose={handleCloseAdd}>
-          <DialogTitle>Add New ATM</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Enter ATM details.</DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="atmName"
-              name="atmName"
-              label="ATM Name"
-              type="text"
-              fullWidth
-              value={formik.values.atmName}
-              onChange={formik.handleChange}
-              error={formik.touched.atmName && Boolean(formik.errors.atmName)}
-              helperText={formik.touched.atmName && formik.errors.atmName}
-            />
-
-            <TextField
-              margin="dense"
-              name="latitude"
-              label="Latitude"
-              type="text"
-              fullWidth
-              value={formik.values.latitude}
-              onChange={formik.handleChange}
-              error={formik.touched.latitude && Boolean(formik.errors.latitude)}
-              helperText={formik.touched.latitude && formik.errors.latitude}
-            />
-            <TextField
-              margin="dense"
-              name="longitude"
-              label="Longitude"
-              type="text"
-              fullWidth
-              value={formik.values.longitude}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.longitude && Boolean(formik.errors.longitude)
-              }
-              helperText={formik.touched.longitude && formik.errors.longitude}
-            />
-
-            <CustomSelect
-              label="City"
-              name="cityID"
-              value={formik.values.cityID}
-              onChange={async (e) => {
-                formik.handleChange(e);
-                await fetchDistricts(e.target.value);
-              }}
+              </TableHead>
+              <TableBody>
+                {atmData.map((item, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell>{item.atmName}</StyledTableCell>
+                    <StyledTableCell>{item.latitude}</StyledTableCell>
+                    <StyledTableCell>{item.longitude}</StyledTableCell>
+                    <StyledTableCell>{item.cityName}</StyledTableCell>
+                    <StyledTableCell>{item.districtName}</StyledTableCell>
+                    <StyledTableCell>
+                      <DeleteButton
+                        variant="contained"
+                        onClick={() => deleteAtm(item.id)}
+                      >
+                        Delete
+                      </DeleteButton>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <UpdateButton
+                        variant="contained"
+                        onClick={() => handleOpenUpdate(item)}
+                      >
+                        Update
+                      </UpdateButton>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={4} id="Map-grid">
+          <div
+            style={{ width: "100%", height: "50vh", backgroundColor: "red" }}
+          >
+            <MapContainer
+              center={[39.09014653873912, 35.56743804787035]}
+              zoom={5}
+              style={{ height: "100%", width: "100%" }}
             >
-              {cities.map((city) => (
-                <MenuItem key={city.id} value={city.id}>
-                  {city.name}
-                </MenuItem>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              {atmData.map((atm) => (
+                <Marker key={atm.id} position={[atm.latitude, atm.longitude]}>
+                  <Popup>
+                    <InfoRow label="Name" value={atm.atmName} />
+                    <InfoRow label="City" value={atm.cityName} />
+                    <InfoRow label="District" value={atm.districtName} />
+                    <InfoRow label="Latitude" value={atm.latitude} />
+                    <InfoRow label="Longitude" value={atm.longitude} />
+                  </Popup>
+                </Marker>
               ))}
-            </CustomSelect>
+            </MapContainer>
+          </div>
+        </Grid>
+      </Grid>
 
-            <CustomSelect
-              label="District"
-              name="districtID"
-              value={formik.values.districtID}
-              onChange={formik.handleChange}
-              disabled={!formik.values.cityID}
-            >
-              {districts.map((district) => (
-                <MenuItem key={district.id} value={district.id}>
-                  {district.name}
-                </MenuItem>
-              ))}
-            </CustomSelect>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseAdd} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={formik.handleSubmit} color="primary">
-              Add
-            </Button>
-          </DialogActions>
-        </Dialog>
+      <Dialog label="Add" open={openAdd} onClose={handleCloseAdd}>
+        <DialogTitle>Add New ATM</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Enter ATM details.</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="atmName"
+            name="atmName"
+            label="ATM Name"
+            type="text"
+            fullWidth
+            value={formik.values.atmName}
+            onChange={formik.handleChange}
+            error={formik.touched.atmName && Boolean(formik.errors.atmName)}
+            helperText={formik.touched.atmName && formik.errors.atmName}
+          />
 
-        <Dialog label="Update" open={openUpdate} onClose={handleCloseUpdate}>
-          <DialogTitle>Update ATM</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Enter ATM details.</DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="atmName"
-              label="ATM Name"
-              type="text"
-              fullWidth
-              value={formik.values.atmName}
-              onChange={formik.handleChange}
-              error={formik.touched.atmName && Boolean(formik.errors.atmName)}
-              helperText={formik.touched.atmName && formik.errors.atmName}
-            />
-            <TextField
-              margin="dense"
-              name="latitude"
-              label="Latitude"
-              type="text"
-              fullWidth
-              value={formik.values.latitude}
-              onChange={formik.handleChange}
-              error={formik.touched.latitude && Boolean(formik.errors.latitude)}
-              helperText={formik.touched.latitude && formik.errors.latitude}
-            />
-            <TextField
-              margin="dense"
-              name="longitude"
-              label="Longitude"
-              type="text"
-              fullWidth
-              value={formik.values.longitude}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.longitude && Boolean(formik.errors.longitude)
-              }
-              helperText={formik.touched.longitude && formik.errors.longitude}
-            />
-            <CustomSelect
-              label="City"
-              name="cityID"
-              value={formik.values.cityID}
-              onChange={async (e) => {
-                formik.handleChange(e);
-                await fetchDistricts(e.target.value);
-              }}
-            >
-              {cities.map((city) => (
-                <MenuItem key={city.id} value={city.id}>
-                  {city.name}
-                </MenuItem>
-              ))}
-            </CustomSelect>
-            <CustomSelect
-              label="District"
-              name="districtID"
-              value={formik.values.districtID}
-              onChange={formik.handleChange}
-            >
-              {districts.map((district) => (
-                <MenuItem key={district.id} value={district.id}>
-                  {district.name}
-                </MenuItem>
-              ))}
-            </CustomSelect>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseUpdate} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={formik.handleSubmit} color="primary">
-              Update
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Container>
+          <TextField
+            margin="dense"
+            name="latitude"
+            label="Latitude"
+            type="text"
+            fullWidth
+            value={formik.values.latitude}
+            onChange={formik.handleChange}
+            error={formik.touched.latitude && Boolean(formik.errors.latitude)}
+            helperText={formik.touched.latitude && formik.errors.latitude}
+          />
+          <TextField
+            margin="dense"
+            name="longitude"
+            label="Longitude"
+            type="text"
+            fullWidth
+            value={formik.values.longitude}
+            onChange={formik.handleChange}
+            error={formik.touched.longitude && Boolean(formik.errors.longitude)}
+            helperText={formik.touched.longitude && formik.errors.longitude}
+          />
+
+          <CustomSelect
+            label="City"
+            name="cityID"
+            value={formik.values.cityID}
+            onChange={async (e) => {
+              formik.handleChange(e);
+              await fetchDistricts(e.target.value);
+            }}
+          >
+            {cities.map((city) => (
+              <MenuItem key={city.id} value={city.id}>
+                {city.name}
+              </MenuItem>
+            ))}
+          </CustomSelect>
+
+          <CustomSelect
+            label="District"
+            name="districtID"
+            value={formik.values.districtID}
+            onChange={formik.handleChange}
+            disabled={!formik.values.cityID}
+          >
+            {districts.map((district) => (
+              <MenuItem key={district.id} value={district.id}>
+                {district.name}
+              </MenuItem>
+            ))}
+          </CustomSelect>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAdd} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={formik.handleSubmit} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog label="Update" open={openUpdate} onClose={handleCloseUpdate}>
+        <DialogTitle>Update ATM</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Enter ATM details.</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="atmName"
+            label="ATM Name"
+            type="text"
+            fullWidth
+            value={formik.values.atmName}
+            onChange={formik.handleChange}
+            error={formik.touched.atmName && Boolean(formik.errors.atmName)}
+            helperText={formik.touched.atmName && formik.errors.atmName}
+          />
+          <TextField
+            margin="dense"
+            name="latitude"
+            label="Latitude"
+            type="text"
+            fullWidth
+            value={formik.values.latitude}
+            onChange={formik.handleChange}
+            error={formik.touched.latitude && Boolean(formik.errors.latitude)}
+            helperText={formik.touched.latitude && formik.errors.latitude}
+          />
+          <TextField
+            margin="dense"
+            name="longitude"
+            label="Longitude"
+            type="text"
+            fullWidth
+            value={formik.values.longitude}
+            onChange={formik.handleChange}
+            error={formik.touched.longitude && Boolean(formik.errors.longitude)}
+            helperText={formik.touched.longitude && formik.errors.longitude}
+          />
+          <CustomSelect
+            label="City"
+            name="cityID"
+            value={formik.values.cityID}
+            onChange={async (e) => {
+              formik.handleChange(e);
+              await fetchDistricts(e.target.value);
+            }}
+          >
+            {cities.map((city) => (
+              <MenuItem key={city.id} value={city.id}>
+                {city.name}
+              </MenuItem>
+            ))}
+          </CustomSelect>
+          <CustomSelect
+            label="District"
+            name="districtID"
+            value={formik.values.districtID}
+            onChange={formik.handleChange}
+          >
+            {districts.map((district) => (
+              <MenuItem key={district.id} value={district.id}>
+                {district.name}
+              </MenuItem>
+            ))}
+          </CustomSelect>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseUpdate} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={formik.handleSubmit} color="primary">
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Fragment>
   );
 }
