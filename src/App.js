@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import {
@@ -40,26 +40,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-/* const MapComponent = () => {
-  return (
-    <MapContainer
-      center={[51.505, -0.09]}
-      zoom={13}
-      style={{ height: "100vh", width: "100%" }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <Marker position={[51.505, -0.09]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker>
-    </MapContainer>
-  );
-}; */
-
 const InfoRow = ({ label, value }) => (
   <Typography component="div" variant="body2">
     <Typography variant="body2" component="span" style={{ fontWeight: "bold" }}>
@@ -69,8 +49,19 @@ const InfoRow = ({ label, value }) => (
   </Typography>
 );
 
-const CustomSelect = ({ label, name, value, onChange, children, disabled }) => (
-  <FormControl fullWidth>
+const CustomSelect = ({
+  label,
+  name,
+  value,
+  onChange,
+  children,
+  disabled,
+  style,
+}) => (
+  <FormControl
+    fullWidth
+    style={{ marginBottom: "5px", marginTop: "10px", ...style }}
+  >
     <InputLabel id={`${name}-label`}>{label}</InputLabel>
     <Select
       labelId={`${name}-label`}
@@ -116,6 +107,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-body": {
     fontSize: 14,
   },
+  padding: "5px 6px",
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -298,8 +290,8 @@ function App() {
     <Fragment>
       <div>
         <MapContainer
-          center={[40.989891586469625, 28.71540046609974]}
-          zoom={13}
+          center={[39.09014653873912, 35.56743804787035]}
+          zoom={6}
           style={{ height: "100vh", width: "100%" }}
         >
           <TileLayer
