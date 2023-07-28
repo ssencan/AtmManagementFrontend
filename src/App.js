@@ -50,22 +50,22 @@ const StyledButton = styled(Button)({
   "&:hover": {
     backgroundColor: "#303f9f",
   },
-  width: "70px",
+  width: "80px",
   height: "25px",
   padding: "0",
   fontSize: "10px",
 });
 
-function ResetButton() {
+function CenterButton() {
   const map = useMap();
 
-  const resetView = () => {
+  const centerView = () => {
     map.flyTo([39.09014653873912, 35.56743804787035], 5);
   };
 
   return (
-    <StyledButton onClick={resetView} variant="contained">
-      Reset View
+    <StyledButton onClick={centerView} variant="contained">
+      Center View
     </StyledButton>
   );
 }
@@ -429,7 +429,7 @@ function App() {
                 </Marker>
               ))}
               <Control position="bottomleft">
-                <ResetButton />
+                <CenterButton />
               </Control>
             </MapContainer>
           </div>
