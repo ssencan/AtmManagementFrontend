@@ -393,7 +393,11 @@ function App() {
         </Grid>
         <Grid item xs={4} id="Map-grid">
           <div
-            style={{ width: "100%", height: "50vh", backgroundColor: "red" }}
+            style={{
+              position: "sticky",
+              top: "0",
+              height: "50vh",
+            }}
           >
             <MapContainer
               center={[39.09014653873912, 35.56743804787035]}
