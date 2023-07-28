@@ -4,8 +4,17 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
+import Control from "react-leaflet-custom-control";
 import "leaflet/dist/leaflet.css";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
+
 import L from "leaflet";
 import {
   Button,
@@ -32,6 +41,35 @@ import {
   InputLabel,
   Grid,
 } from "@mui/material";
+const StyledButton = styled(Button)({
+  position: "absolute",
+  bottom: "10px",
+  left: "10px",
+  backgroundColor: "#3f51b5",
+  color: "white",
+  "&:hover": {
+    backgroundColor: "#303f9f",
+  },
+  width: "70px",
+  height: "25px",
+  padding: "0",
+  fontSize: "10px",
+});
+
+function ResetButton() {
+  const map = useMap();
+
+  const resetView = () => {
+    map.flyTo([39.09014653873912, 35.56743804787035], 5);
+  };
+
+  return (
+    <StyledButton onClick={resetView} variant="contained">
+      Reset View
+    </StyledButton>
+  );
+}
+
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -386,6 +424,9 @@ function App() {
                   </Popup>
                 </Marker>
               ))}
+              <Control position="bottomleft">
+                <ResetButton />
+              </Control>
             </MapContainer>
           </div>
         </Grid>
