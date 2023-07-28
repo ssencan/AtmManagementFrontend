@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import {
@@ -23,7 +23,6 @@ import {
   TableRow,
   Paper,
   styled,
-  Container,
   AppBar,
   Toolbar,
   Typography,
@@ -140,6 +139,7 @@ function App() {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [hoveredAtmId, setHoveredAtmId] = useState(null);
   const formik = useFormik({
     initialValues: {
       id: "",
@@ -321,7 +321,11 @@ function App() {
               </TableHead>
               <TableBody>
                 {atmData.map((item, index) => (
-                  <StyledTableRow key={index}>
+                  <StyledTableRow
+                    key={index}
+                    onMouseEnter={() => setHoveredAtmId(item.id)}
+                    onMouseLeave={() => setHoveredAtmId(null)}
+                  >
                     <StyledTableCell>{item.atmName}</StyledTableCell>
                     <StyledTableCell>{item.latitude}</StyledTableCell>
                     <StyledTableCell>{item.longitude}</StyledTableCell>
@@ -364,6 +368,15 @@ function App() {
               />
               {atmData.map((atm) => (
                 <Marker key={atm.id} position={[atm.latitude, atm.longitude]}>
+                  {hoveredAtmId === atm.id && (
+                    <Tooltip permanent>
+                      <InfoRow label="Name" value={atm.atmName} />
+                      <InfoRow label="City" value={atm.cityName} />
+                      <InfoRow label="District" value={atm.districtName} />
+                      <InfoRow label="Latitude" value={atm.latitude} />
+                      <InfoRow label="Longitude" value={atm.longitude} />
+                    </Tooltip>
+                  )}
                   <Popup>
                     <InfoRow label="Name" value={atm.atmName} />
                     <InfoRow label="City" value={atm.cityName} />
