@@ -336,7 +336,7 @@ function App() {
         </Toolbar>
       </AppBar>
       <Grid container style={{ height: "100vh" }}>
-        <Grid item xs={8} id="table-grid">
+        <Grid id="table-grid" item xs={12} md={8} order={{ xs: 2, md: 1 }}>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -391,7 +391,7 @@ function App() {
             </Table>
           </TableContainer>
         </Grid>
-        <Grid item xs={4} id="Map-grid">
+        <Grid id="map-grid" item xs={12} md={4} order={{ xs: 1, md: 2 }}>
           <div
             style={{
               position: "sticky",
