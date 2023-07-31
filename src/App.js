@@ -330,7 +330,7 @@ function App() {
     <Fragment>
       <ToastContainer />
       <MainLayout>
-        <Grid container style={{ height: "100vh" }}>
+        <Grid container style={{ height: "100%" }}>
           <Grid id="table-grid" item xs={12} md={8} order={{ xs: 2, md: 1 }}>
             <TableContainer component={Paper}>
               <Table>

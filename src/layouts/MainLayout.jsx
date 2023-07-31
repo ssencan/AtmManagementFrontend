@@ -2,8 +2,7 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
+import { ReactComponent as Logo } from "../layouts/sekerbank-logo.svg"; // SVG logo import
 
 const MainLayout = ({ children }) => {
   return (
@@ -11,30 +10,20 @@ const MainLayout = ({ children }) => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            ATM Management System
+            My App
           </Typography>
         </Toolbar>
       </AppBar>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-        }}
-      >
-        <div style={{ flexGrow: 1, overflow: "auto" }}>{children}</div>
-        <AppBar position="static" color="primary">
-          <Container maxWidth="md">
-            <Toolbar>
-              <Box flexGrow={1}>
-                <Typography variant="body1" align="center">
-                  Footer content goes here.
-                </Typography>
-              </Box>
-            </Toolbar>
-          </Container>
-        </AppBar>
-      </div>
+      {children}
+      <footer>
+        <div className="w-full text-center">
+          <div className="w-full justify-between sm:flex sm:items-center sm:justify-between">
+            <a href="https://www.sekerbank.com.tr">
+              <Logo alt="Şekerbank Logo" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </>
   );
 };
