@@ -15,7 +15,7 @@ const MainLayout = ({ children }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Box p={2}>{children}</Box>
+      <div style={{ padding: "10px" }}>{children}</div>
       <footer
         style={{
           backgroundColor: "#f8f9fa",
