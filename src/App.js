@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Control from "react-leaflet-custom-control";
 import "leaflet/dist/leaflet.css";
-import MainLayout from "./layouts/MainLayout";
+import Home from "./pages/home";
 import {
   MapContainer,
   TileLayer,
@@ -329,7 +329,7 @@ function App() {
   return (
     <Fragment>
       <ToastContainer />
-      <MainLayout>
+      <Home>
         <Grid container style={{ height: "100%" }}>
           <Grid id="table-grid" item xs={12} md={8} order={{ xs: 2, md: 1 }}>
             <TableContainer component={Paper}>
@@ -591,7 +591,7 @@ function App() {
             </Button>
           </DialogActions>
         </Dialog>
-      </MainLayout>
+      </Home>
     </Fragment>
   );
 }
