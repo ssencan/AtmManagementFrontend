@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Control from "react-leaflet-custom-control";
 import "leaflet/dist/leaflet.css";
 import Home from "./pages/home";
-import AtmTable from "./components/Table";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   MapContainer,
@@ -157,40 +156,6 @@ const atmValidationSchema = yup.object({
   cityID: yup.number("Select City").required("City is required"),
   districtID: yup.number("Select District").required("District is required"),
 });
-
-/* const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  "&.MuiTableCell-head": {
-    backgroundColor: theme.palette.primary.dark,
-    color: theme.palette.common.white,
-  },
-  "&.MuiTableCell-body": {
-    fontSize: 14,
-  },
-  padding: "5px 6px",
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  "&:hover": {
-    backgroundColor: theme.palette.action.selected,
-  },
-}));
-
-const DeleteButton = styled(Button)({
-  backgroundColor: "#ff0000", // kırmızı
-  "&:hover": {
-    backgroundColor: "#b30000", // üzerine gelindiğinde daha koyu bir kırmızı
-  },
-}); */
-
-/* const UpdateButton = styled(Button)({
-  backgroundColor: "#008000", // yeşil
-  "&:hover": {
-    backgroundColor: "#006400", // üzerine gelindiğinde daha koyu bir yeşil
-  },s
-}); */
 
 function App() {
   const [atmData, setAtmData] = useState([]);
@@ -349,19 +314,17 @@ function App() {
   return (
     <Fragment>
       <ToastContainer />
-      <Home>
+      <ThemeProvider theme={theme}>
         <Grid container style={{ height: "100%" }}>
-          <Grid id="table-grid" item xs={12} md={8} order={{ xs: 2, md: 1 }}>
-            <ThemeProvider theme={theme}>
-              <AtmTable
-                handleOpenAdd={handleOpenAdd}
-                atmData={atmData}
-                deleteAtm={deleteAtm}
-                handleOpenUpdate={handleOpenUpdate}
-                hoveredAtmId={hoveredAtmId}
-                setHoveredAtmId={setHoveredAtmId}
-              />
-            </ThemeProvider>
+          <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
+            <Home
+              handleOpenAdd={handleOpenAdd}
+              atmData={atmData}
+              deleteAtm={deleteAtm}
+              handleOpenUpdate={handleOpenUpdate}
+              hoveredAtmId={hoveredAtmId}
+              setHoveredAtmId={setHoveredAtmId}
+            />
           </Grid>
           <Grid id="map-grid" item xs={12} md={4} order={{ xs: 1, md: 2 }}>
             <div
@@ -568,7 +531,7 @@ function App() {
             </Button>
           </DialogActions>
         </Dialog>
-      </Home>
+      </ThemeProvider>
     </Fragment>
   );
 }
