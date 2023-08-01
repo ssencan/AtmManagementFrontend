@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Control from "react-leaflet-custom-control";
 import "leaflet/dist/leaflet.css";
 import Home from "./pages/home";
+import AtmTable from "./components/table";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   MapContainer,
   TileLayer,
@@ -42,6 +44,24 @@ import {
   InputLabel,
   Grid,
 } from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: "#757ce8",
+      main: "#3f50b5",
+      dark: "#002884",
+      contrastText: "#fff",
+    },
+    secondary: {
+      light: "#ff7961",
+      main: "#f44336",
+      dark: "#ba000d",
+      contrastText: "#000",
+    },
+  },
+});
+
 const StyledButton = styled(Button)({
   position: "absolute",
   bottom: "10px",
@@ -138,7 +158,7 @@ const atmValidationSchema = yup.object({
   districtID: yup.number("Select District").required("District is required"),
 });
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+/* const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
     backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
@@ -163,14 +183,14 @@ const DeleteButton = styled(Button)({
   "&:hover": {
     backgroundColor: "#b30000", // üzerine gelindiğinde daha koyu bir kırmızı
   },
-});
+}); */
 
-const UpdateButton = styled(Button)({
+/* const UpdateButton = styled(Button)({
   backgroundColor: "#008000", // yeşil
   "&:hover": {
     backgroundColor: "#006400", // üzerine gelindiğinde daha koyu bir yeşil
-  },
-});
+  },s
+}); */
 
 function App() {
   const [atmData, setAtmData] = useState([]);
@@ -332,59 +352,16 @@ function App() {
       <Home>
         <Grid container style={{ height: "100%" }}>
           <Grid id="table-grid" item xs={12} md={8} order={{ xs: 2, md: 1 }}>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <StyledTableRow>
-                    <StyledTableCell>ATM Name</StyledTableCell>
-                    <StyledTableCell>Latitude</StyledTableCell>
-                    <StyledTableCell>Longitude</StyledTableCell>
-                    <StyledTableCell>City Name</StyledTableCell>
-                    <StyledTableCell>District Name</StyledTableCell>
-                    <StyledTableCell colSpan={6}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleOpenAdd}
-                      >
-                        Add ATM
-                      </Button>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </TableHead>
-                <TableBody>
-                  {atmData.map((item, index) => (
-                    <StyledTableRow
-                      key={index}
-                      onMouseEnter={() => setHoveredAtmId(item.id)}
-                      onMouseLeave={() => setHoveredAtmId(null)}
-                    >
-                      <StyledTableCell>{item.atmName}</StyledTableCell>
-                      <StyledTableCell>{item.latitude}</StyledTableCell>
-                      <StyledTableCell>{item.longitude}</StyledTableCell>
-                      <StyledTableCell>{item.cityName}</StyledTableCell>
-                      <StyledTableCell>{item.districtName}</StyledTableCell>
-                      <StyledTableCell>
-                        <DeleteButton
-                          variant="contained"
-                          onClick={() => deleteAtm(item.id)}
-                        >
-                          Delete
-                        </DeleteButton>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <UpdateButton
-                          variant="contained"
-                          onClick={() => handleOpenUpdate(item)}
-                        >
-                          Update
-                        </UpdateButton>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <ThemeProvider theme={theme}>
+              <AtmTable
+                handleOpenAdd={handleOpenAdd}
+                atmData={atmData}
+                deleteAtm={deleteAtm}
+                handleOpenUpdate={handleOpenUpdate}
+                hoveredAtmId={hoveredAtmId}
+                setHoveredAtmId={setHoveredAtmId}
+              />
+            </ThemeProvider>
           </Grid>
           <Grid id="map-grid" item xs={12} md={4} order={{ xs: 1, md: 2 }}>
             <div
