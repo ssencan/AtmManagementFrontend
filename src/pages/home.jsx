@@ -1,6 +1,6 @@
 import React from "react";
 import MainLayout from "../layouts/MainLayout";
-import AtmTable from "../components/Table";
+import AtmTable from "../components/AtmTable";
 
 const Home = ({
   handleOpenAdd,
