@@ -2,18 +2,31 @@ import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { styled } from "@mui/system";
+
+const GreenAppBar = styled(AppBar)({
+  backgroundColor: "#006400",
+  boxShadow: "0px 3px 10px 0px rgba(0, 0, 0, 0.2)",
+  borderRadius: "10px",
+});
+
+const WhiteTypography = styled(Typography)({
+  color: "#FFFFFF",
+  fontWeight: "bold",
+});
 
 const Header = () => {
   return (
     <>
-      <AppBar position="static">
+      <GreenAppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <WhiteTypography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             ATM Management System
-          </Typography>
+          </WhiteTypography>
         </Toolbar>
-      </AppBar>
+      </GreenAppBar>
     </>
   );
 };
+
 export default Header;

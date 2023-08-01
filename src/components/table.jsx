@@ -23,25 +23,35 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#F3F3F3", // sabit bir gri renk değeri
+    backgroundColor: "#F3F3F3",
   },
   "&:hover": {
-    backgroundColor: theme.palette.primary.main, // varsayılan olarak tanımlanmış bir renk
+    backgroundColor: "#B5FF7D",
   },
 }));
 
-const DeleteButton = styled(Button)({
-  backgroundColor: "#ff0000", // kırmızı
+const AddButton = styled(Button)({
+  backgroundColor: "#007A3D",
   "&:hover": {
-    backgroundColor: "#b30000", // üzerine gelindiğinde daha koyu bir kırmızı
+    backgroundColor: "#7DB900",
   },
+  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .8)",
+});
+
+const DeleteButton = styled(Button)({
+  backgroundColor: "#ff0000",
+  "&:hover": {
+    backgroundColor: "#6f0000",
+  },
+  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .8)",
 });
 
 const UpdateButton = styled(Button)({
-  backgroundColor: "#008000", // yeşil
+  backgroundColor: "primary",
   "&:hover": {
-    backgroundColor: "#006400", // üzerine gelindiğinde daha koyu bir yeşil
+    backgroundColor: "	#010048",
   },
+  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .8)",
 });
 
 const AtmTable = ({
@@ -49,7 +59,7 @@ const AtmTable = ({
   atmData,
   deleteAtm,
   handleOpenUpdate,
-  hoveredAtmId,
+  // hoveredAtmId,
   setHoveredAtmId,
 }) => {
   return (
@@ -63,9 +73,9 @@ const AtmTable = ({
             <StyledTableCell>City Name</StyledTableCell>
             <StyledTableCell>District Name</StyledTableCell>
             <StyledTableCell colSpan={6}>
-              <Button variant="contained" onClick={handleOpenAdd}>
+              <AddButton variant="contained" onClick={handleOpenAdd}>
                 Add ATM
-              </Button>
+              </AddButton>
             </StyledTableCell>
           </StyledTableRow>
         </TableHead>

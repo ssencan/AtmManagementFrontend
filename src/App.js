@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Control from "react-leaflet-custom-control";
 import "leaflet/dist/leaflet.css";
 import Home from "./pages/home";
-import AtmTable from "./components/table";
+import AtmTable from "./components/Table";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   MapContainer,
