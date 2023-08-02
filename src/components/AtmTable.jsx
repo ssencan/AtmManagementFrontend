@@ -1,4 +1,5 @@
 import { styled } from "@mui/system";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Button,
   Table,
@@ -55,13 +56,29 @@ const UpdateButton = styled(Button)({
 });
 
 const AtmTable = ({
-  handleOpenAdd,
   atmData,
   deleteAtm,
   handleOpenUpdate,
   hoveredAtmId,
   setHoveredAtmId,
+  fetchCities,
+  fetchDistricts,
 }) => {
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+
+  const handleOpenAdd = async () => {
+    await Promise.all([fetchCities(), fetchDistricts()]);
+    setOpenAdd(true);
+
+    const handleOpenUpdate = async (atmToUpdate) => {
+      await fetchCities();
+      await fetchDistricts(atmToUpdate.cityID);
+      formik.setValues(atmToUpdate);
+      setOpenUpdate(true);
+    };
+  };
+
   return (
     <div>
       <TableContainer component={Paper}>

@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Control from "react-leaflet-custom-control";
 import "leaflet/dist/leaflet.css";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   MapContainer,
@@ -158,13 +158,9 @@ const atmValidationSchema = yup.object({
 });
 
 function App() {
-  const [atmData, setAtmData] = useState([]);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openUpdate, setOpenUpdate] = useState(false);
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
   const [hoveredAtmId, setHoveredAtmId] = useState(null);
   const formik = useFormik({
+    //bunu galiba home içine taşıycaz. Çünkü hem table da handleopenupdate ile hem de modal componentinde kullanılacak
     initialValues: {
       id: "",
       atmName: "",
@@ -177,7 +173,7 @@ function App() {
     validationSchema: atmValidationSchema,
     onSubmit: (values) => {
       if (openAdd) {
-        addAtm(values);
+        addAtm(values); //burda formikle add çağrılıyor. addmetodunu modal componentinde mi açmam lazım?
       } else if (openUpdate) {
         updateAtm(values);
       }
@@ -185,45 +181,10 @@ function App() {
   });
 
   useEffect(() => {
-    fetchAtmData();
-    fetchCities();
-  }, []);
-  useEffect(() => {
     if (formik.values.cityID) {
       fetchDistricts(formik.values.cityID);
     }
   }, [formik.values.cityID]);
-
-  const fetchAtmData = async () => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/Atm");
-      const activeAtms = response.data.filter((atm) => atm.isActive);
-      setAtmData(activeAtms);
-    } catch (atmGETerror) {
-      console.error(atmGETerror);
-    }
-  };
-
-  const fetchCities = async () => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/City");
-      setCities(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchDistricts = async (cityId) => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/District");
-      const cityDistricts = response.data.filter(
-        (district) => district.cityId === cityId
-      );
-      setDistricts(cityDistricts);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const addAtm = async () => {
     try {
@@ -289,18 +250,6 @@ function App() {
     setDistricts([]);
   };
 
-  const handleOpenAdd = async () => {
-    await Promise.all([fetchCities(), fetchDistricts()]);
-    setOpenAdd(true);
-  };
-
-  const handleOpenUpdate = async (atmToUpdate) => {
-    await fetchCities();
-    await fetchDistricts(atmToUpdate.cityID);
-    formik.setValues(atmToUpdate);
-    setOpenUpdate(true);
-  };
-
   const handleCloseAdd = () => {
     setOpenAdd(false);
     resetForm();
@@ -318,10 +267,9 @@ function App() {
         <Grid container style={{ height: "100%" }}>
           <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
             <Home
-              handleOpenAdd={handleOpenAdd}
-              atmData={atmData}
+              //handleOpenAdd taşındı table componente
+              //handleOpenUpdate taşındı table componente
               deleteAtm={deleteAtm}
-              handleOpenUpdate={handleOpenUpdate}
               hoveredAtmId={hoveredAtmId}
               setHoveredAtmId={setHoveredAtmId}
             />
