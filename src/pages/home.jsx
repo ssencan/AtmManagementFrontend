@@ -3,16 +3,13 @@ import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import MainLayout from "../layouts/MainLayout";
 import AtmTable from "../components/AtmTable";
+import AtmDialog from "../components/AtmDialog";
 
 const Home = ({ deleteAtm, hoveredAtmId, setHoveredAtmId }) => {
   const [atmData, setAtmData] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
-
-  useEffect(() => {
-    fetchAtmData();
-    fetchCities();
-  }, []);
+  const [openAdd, setOpenAdd] = useState(false); //modalda da var home taşınacak
+  const [openUpdate, setOpenUpdate] = useState(false); //modalda da var home taşınacak
+  const [atmToUpdate, setAtmToUpdate] = useState(null);
 
   const fetchAtmData = async () => {
     try {
@@ -44,6 +41,37 @@ const Home = ({ deleteAtm, hoveredAtmId, setHoveredAtmId }) => {
       console.error(error);
     }
   };
+  useEffect(() => {
+    fetchAtmData();
+    fetchCities();
+  }, []);
+  useEffect(() => {
+    if (formik.values.cityID) {
+      fetchDistricts(formik.values.cityID);
+    }
+  }, [formik.values.cityID]);
+
+  /* const formik = useFormik({
+    //bunu galiba home içine taşıycaz. Çünkü hem table da handleopenupdate ile hem de modal componentinde kullanılacak
+    initialValues: {
+      id: "",
+      atmName: "",
+      latitude: "",
+      longitude: "",
+      cityID: "",
+      districtID: "",
+      isActive: true,
+    },
+    validationSchema: atmValidationSchema,
+    onSubmit: (values) => {
+      if (openAdd) {
+        addAtm(values); //burda formikle add çağrılıyor. addmetodunu modal componentinde mi açmam lazım?
+        //bunu ayrı fonksiyon oluşturup prop geçmem lazım.
+      } else if (openUpdate) {
+        updateAtm(values);
+      }
+    },
+  }); */
 
   return (
     <MainLayout>
@@ -56,7 +84,16 @@ const Home = ({ deleteAtm, hoveredAtmId, setHoveredAtmId }) => {
           setHoveredAtmId={setHoveredAtmId}
           fetchCities={fetchCities}
           fetchDistricts={fetchDistricts}
+          formik={formik}
+          openAdd={openAdd}
+          openUpdate={openUpdate}
+          setOpenAdd={setOpenAdd}
+          setOpenUpdate={setOpenUpdate}
         />
+        <AtmDialog>
+          atmToUpdate={atmToUpdate}
+          setAtmToUpdate={setAtmToUpdate}
+        </AtmDialog>
       </div>
     </MainLayout>
   );

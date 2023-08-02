@@ -58,25 +58,20 @@ const UpdateButton = styled(Button)({
 const AtmTable = ({
   atmData,
   deleteAtm,
-  handleOpenUpdate,
   hoveredAtmId,
   setHoveredAtmId,
   fetchCities,
   fetchDistricts,
+  formik,
+  setOpenAdd,
+  setOpenUpdate,
 }) => {
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openUpdate, setOpenUpdate] = useState(false);
-
   const handleOpenAdd = async () => {
-    await Promise.all([fetchCities(), fetchDistricts()]);
     setOpenAdd(true);
-
-    const handleOpenUpdate = async (atmToUpdate) => {
-      await fetchCities();
-      await fetchDistricts(atmToUpdate.cityID);
-      formik.setValues(atmToUpdate);
-      setOpenUpdate(true);
-    };
+  };
+  const handleOpenUpdate = async (atmToUpdate) => {
+    setAtmToUpdate(atm);
+    setOpenUpdate(true);
   };
 
   return (
