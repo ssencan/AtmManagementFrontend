@@ -1,15 +1,15 @@
 import React from "react";
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
+import { Grid } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 import AtmTable from "../components/AtmTable";
-import AtmDialog from "../components/AtmDialog";
+import AtmMap from "../components/AtmMap";
+import { Padding } from "@mui/icons-material";
 
-const Home = ({ deleteAtm, hoveredAtmId, setHoveredAtmId }) => {
+const Home = () => {
   const [atmData, setAtmData] = useState([]);
-  const [openAdd, setOpenAdd] = useState(false); //modalda da var home taşınacak
-  const [openUpdate, setOpenUpdate] = useState(false); //modalda da var home taşınacak
-  const [atmToUpdate, setAtmToUpdate] = useState(null);
+  const [hoveredAtmId, setHoveredAtmId] = useState(null);
 
   const fetchAtmData = async () => {
     try {
@@ -20,80 +20,26 @@ const Home = ({ deleteAtm, hoveredAtmId, setHoveredAtmId }) => {
       console.error(atmGETerror);
     }
   };
-
-  const fetchCities = async () => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/City");
-      setCities(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchDistricts = async (cityId) => {
-    try {
-      const response = await axios.get("https://localhost:44334/api/District");
-      const cityDistricts = response.data.filter(
-        (district) => district.cityId === cityId
-      );
-      setDistricts(cityDistricts);
-    } catch (error) {
-      console.error(error);
-    }
-  };
   useEffect(() => {
     fetchAtmData();
-    fetchCities();
   }, []);
-  useEffect(() => {
-    if (formik.values.cityID) {
-      fetchDistricts(formik.values.cityID);
-    }
-  }, [formik.values.cityID]);
-
-  /* const formik = useFormik({
-    //bunu galiba home içine taşıycaz. Çünkü hem table da handleopenupdate ile hem de modal componentinde kullanılacak
-    initialValues: {
-      id: "",
-      atmName: "",
-      latitude: "",
-      longitude: "",
-      cityID: "",
-      districtID: "",
-      isActive: true,
-    },
-    validationSchema: atmValidationSchema,
-    onSubmit: (values) => {
-      if (openAdd) {
-        addAtm(values); //burda formikle add çağrılıyor. addmetodunu modal componentinde mi açmam lazım?
-        //bunu ayrı fonksiyon oluşturup prop geçmem lazım.
-      } else if (openUpdate) {
-        updateAtm(values);
-      }
-    },
-  }); */
 
   return (
     <MainLayout>
       <div style={{ padding: "10px" }}>
-        <AtmTable
-          atmData={atmData}
-          deleteAtm={deleteAtm}
-          //handleopen update ve add silindi
-          hoveredAtmId={hoveredAtmId}
-          setHoveredAtmId={setHoveredAtmId}
-          fetchCities={fetchCities}
-          fetchDistricts={fetchDistricts}
-          formik={formik}
-          openAdd={openAdd}
-          openUpdate={openUpdate}
-          setOpenAdd={setOpenAdd}
-          setOpenUpdate={setOpenUpdate}
-        />
-        <AtmDialog>
-          atmToUpdate={atmToUpdate}
-          setAtmToUpdate={setAtmToUpdate}
-        </AtmDialog>
+        <Grid container style={{ height: "100%" }}>
+          <Grid item xs={12} md={8} order={{ xs: 2, md: 1 }}>
+            <AtmTable
+              fetchAtmData={fetchAtmData}
+              atmData={atmData}
+              hoveredAtmId={hoveredAtmId}
+              setHoveredAtmId={setHoveredAtmId}
+            />
+          </Grid>
+          <Grid id="map-grid" item xs={12} md={4} order={{ xs: 1, md: 2 }}>
+            <AtmMap atmData={atmData} hoveredAtmId={hoveredAtmId} />
+          </Grid>
+        </Grid>
       </div>
     </MainLayout>
   );
