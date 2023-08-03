@@ -92,9 +92,9 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
     isActive: true,
   });
 
-  useEffect(() => {
+  /*   useEffect(() => {
     fetchCities();
-  }, []);
+  }, []); */
 
   /*   useEffect(() => {
     if (formik.values.cityID) {
@@ -195,9 +195,19 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
     setMode(mode);
     if (mode === "update") {
       setAtmToUpdate(atmToUpdate);
-      // await fetchCities();
-      // await fetchDistricts(atmToUpdate.cityID);
-      // formik.setValues(atmToUpdate);
+      await fetchCities();
+      await fetchDistricts(atmToUpdate.cityID);
+      setInitialValues({
+        id: atmToUpdate.id,
+        atmName: atmToUpdate.atmName,
+        latitude: atmToUpdate.latitude,
+        longitude: atmToUpdate.longitude,
+        cityID: atmToUpdate.cityID,
+        districtID: atmToUpdate.districtID,
+        isActive: atmToUpdate.isActive,
+      });
+    } else {
+      setInitialValues({});
     }
     setOpen(true);
   };
@@ -276,6 +286,7 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
         setDistricts={setDistricts}
         districts={districts}
         fetchAtmData={fetchAtmData}
+        setAtmToUpdate={setAtmToUpdate}
       />
     </div>
   );

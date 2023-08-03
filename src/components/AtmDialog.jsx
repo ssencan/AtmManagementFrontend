@@ -89,6 +89,8 @@ const AtmDialog = ({
   fetchAtmData,
   setCities,
   setDistricts,
+  atmToUpdate,
+  setAtmToUpdate,
 }) => {
   const formik = useFormik({
     initialValues: initialValues,
@@ -100,7 +102,12 @@ const AtmDialog = ({
         updateAtm(values);
       }
     },
+    enableReinitialize: true, // Bu formik hook'una initialValues değiştiğinde formun yeniden başlatılmasını söyler.
   });
+
+  useEffect(() => {
+    fetchCities();
+  }, []);
 
   useEffect(() => {
     if (formik.values.cityID) {
@@ -129,6 +136,8 @@ const AtmDialog = ({
 
   const updateAtm = async () => {
     try {
+      const id = formik.values.id;
+      console.log(typeof id, id);
       const response = await axios.put(
         "https://localhost:44334/api/Atm/UpdateAtm",
         {
@@ -147,6 +156,7 @@ const AtmDialog = ({
       handleClose();
     } catch (atmPuterror) {
       console.error(atmPuterror);
+
       toast.error("Failed to update ATM.");
     }
   };
@@ -154,6 +164,9 @@ const AtmDialog = ({
   const handleClose = () => {
     setOpen(false);
     resetForm();
+    //setAtmToUpdate(null);
+    //formik.setValues(initialValues); // initialValues to reset form
+    fetchCities();
   };
 
   const resetForm = () => {
@@ -186,6 +199,7 @@ const AtmDialog = ({
           name="latitude"
           label="Latitude"
           type="text"
+          defaultValue={initialValues.latitude}
           fullWidth
           value={formik.values.latitude}
           onChange={formik.handleChange}
