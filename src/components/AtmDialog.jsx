@@ -51,6 +51,20 @@ const CustomSelect = ({
   </FormControl>
 );
 
+const CustomTextField = ({ name, label, formik }) => (
+  <TextField
+    margin="dense"
+    name={name}
+    label={label}
+    type="text"
+    fullWidth
+    value={formik.values[name]}
+    onChange={formik.handleChange}
+    error={formik.touched[name] && Boolean(formik.errors[name])}
+    helperText={formik.touched[name] && formik.errors[name]}
+  />
+);
+
 const atmValidationSchema = yup.object({
   atmName: yup.string("Enter ATM Name").required("ATM Name is required"),
   latitude: yup
@@ -166,43 +180,9 @@ const AtmDialog = ({
       <DialogTitle>{mode === "add" ? "Add New ATM" : "Update ATM"}</DialogTitle>
       <DialogContent>
         <DialogContentText>Enter ATM details.</DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="atmName"
-          name="atmName"
-          label="ATM Name"
-          type="text"
-          fullWidth
-          value={formik.values.atmName}
-          onChange={formik.handleChange}
-          error={formik.touched.atmName && Boolean(formik.errors.atmName)}
-          helperText={formik.touched.atmName && formik.errors.atmName}
-        />
-
-        <TextField
-          margin="dense"
-          name="latitude"
-          label="Latitude"
-          type="text"
-          defaultValue={initialValues.latitude}
-          fullWidth
-          value={formik.values.latitude}
-          onChange={formik.handleChange}
-          error={formik.touched.latitude && Boolean(formik.errors.latitude)}
-          helperText={formik.touched.latitude && formik.errors.latitude}
-        />
-        <TextField
-          margin="dense"
-          name="longitude"
-          label="Longitude"
-          type="text"
-          fullWidth
-          value={formik.values.longitude}
-          onChange={formik.handleChange}
-          error={formik.touched.longitude && Boolean(formik.errors.longitude)}
-          helperText={formik.touched.longitude && formik.errors.longitude}
-        />
+        <CustomTextField name="atmName" label="ATM Name" formik={formik} />
+        <CustomTextField name="latitude" label="Latitude" formik={formik} />
+        <CustomTextField name="longitude" label="Longitude" formik={formik} />
 
         <CustomSelect
           label="City"
