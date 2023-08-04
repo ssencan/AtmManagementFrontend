@@ -60,8 +60,6 @@ const UpdateButton = styled(Button)({
 });
 
 const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openUpdate, setOpenUpdate] = useState(false);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [open, setOpen] = useState(false);

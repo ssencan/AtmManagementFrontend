@@ -117,51 +117,46 @@ const AtmDialog = ({
     }
   }, [formik.values.cityID]);
 
-  const addAtm = async () => {
+  const getFormikData = () => ({
+    atmName: formik.values.atmName,
+    latitude: parseFloat(formik.values.latitude),
+    longitude: parseFloat(formik.values.longitude),
+    cityID: parseInt(formik.values.cityID),
+    districtID: parseInt(formik.values.districtID),
+    isActive: formik.values.isActive,
+  });
+
+  const getFormikDataWithId = () => ({
+    ...getFormikData(),
+    id: formik.values.id,
+  });
+
+  const handleAtmRequest = async (method, url, data) => {
     try {
-      await axios.post("https://localhost:44334/api/Atm/CreateAtm", {
-        atmName: formik.values.atmName,
-        latitude: parseFloat(formik.values.latitude),
-        longitude: parseFloat(formik.values.longitude),
-        cityID: parseInt(formik.values.cityID),
-        districtID: parseInt(formik.values.districtID),
-        isActive: formik.values.isActive,
-      });
-      toast.success("ATM added successfully.");
+      const response = await axios[method](url, data);
       fetchAtmData();
       handleClose();
-    } catch (atmPOSTerror) {
-      console.error(atmPOSTerror);
-      toast.error("Failed to add ATM.");
+      toast.success("ATM operation successful.");
+      return response;
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to perform ATM operation.");
     }
   };
 
-  const updateAtm = async () => {
-    try {
-      const id = formik.values.id;
-      console.log(typeof id, id);
-      const response = await axios.put(
-        "https://localhost:44334/api/Atm/UpdateAtm",
-        {
-          id: formik.values.id,
-          atmName: formik.values.atmName,
-          latitude: parseFloat(formik.values.latitude),
-          longitude: parseFloat(formik.values.longitude),
-          cityID: parseInt(formik.values.cityID),
-          districtID: parseInt(formik.values.districtID),
-          isActive: formik.values.isActive,
-        }
-      );
-      console.log("Update response: ", response);
-      await fetchAtmData();
-      toast.success("ATM updated successfully.");
-      handleClose();
-    } catch (atmPuterror) {
-      console.error(atmPuterror);
+  const addAtm = () =>
+    handleAtmRequest(
+      "post",
+      "https://localhost:44334/api/Atm/CreateAtm",
+      getFormikData()
+    );
 
-      toast.error("Failed to update ATM.");
-    }
-  };
+  const updateAtm = () =>
+    handleAtmRequest(
+      "put",
+      "https://localhost:44334/api/Atm/UpdateAtm",
+      getFormikDataWithId()
+    );
 
   const handleClose = () => {
     setOpen(false);
