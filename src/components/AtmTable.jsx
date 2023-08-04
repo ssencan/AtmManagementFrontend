@@ -207,7 +207,16 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
         isActive: atmToUpdate.isActive,
       });
     } else {
-      setInitialValues({});
+      setAtmToUpdate(null);
+      setInitialValues({
+        id: "",
+        atmName: "",
+        latitude: "",
+        longitude: "",
+        cityID: "",
+        districtID: "",
+        isActive: true,
+      }); // Reset initialValues for add mode
     }
     setOpen(true);
   };
