@@ -1,11 +1,10 @@
 import React from "react";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Grid } from "@mui/material";
 import MainLayout from "../layouts/MainLayout";
 import AtmTable from "../components/AtmTable";
 import AtmMap from "../components/AtmMap";
-import { Padding } from "@mui/icons-material";
 
 const Home = () => {
   const [atmData, setAtmData] = useState([]);

@@ -1,9 +1,6 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import * as yup from "yup";
-import { useFormik } from "formik";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import AtmDialog from "../components/AtmDialog";
 
 import {
@@ -15,19 +12,7 @@ import {
   TableRow,
   Paper,
   styled,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
   Button,
-  MenuItem,
-  Grid,
 } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -92,16 +77,6 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
     isActive: true,
   });
 
-  /*   useEffect(() => {
-    fetchCities();
-  }, []); */
-
-  /*   useEffect(() => {
-    if (formik.values.cityID) {
-      fetchDistricts(formik.values.cityID);
-    }
-  }, [formik.values.cityID]); */
-
   const fetchCities = async () => {
     try {
       const response = await axios.get("https://localhost:44334/api/City");
@@ -123,25 +98,6 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
     }
   };
 
-  /* const addAtm = async () => {
-    try {
-      await axios.post("https://localhost:44334/api/Atm/CreateAtm", {
-        atmName: formik.values.atmName,
-        latitude: parseFloat(formik.values.latitude),
-        longitude: parseFloat(formik.values.longitude),
-        cityID: parseInt(formik.values.cityID),
-        districtID: parseInt(formik.values.districtID),
-        isActive: formik.values.isActive,
-      });
-      toast.success("ATM added successfully.");
-      fetchAtmData();
-      handleCloseAdd();
-    } catch (atmPOSTerror) {
-      console.error(atmPOSTerror);
-      toast.error("Failed to add ATM.");
-    }
-  }; */
-
   const deleteAtm = async (id) => {
     try {
       const userConfirmation = window.confirm(
@@ -157,39 +113,6 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
       toast.error("Failed to delete ATM.");
     }
   };
-  /*  const updateAtm = async () => {
-    try {
-      const response = await axios.put(
-        "https://localhost:44334/api/Atm/UpdateAtm",
-        {
-          id: formik.values.id,
-          atmName: formik.values.atmName,
-          latitude: parseFloat(formik.values.latitude),
-          longitude: parseFloat(formik.values.longitude),
-          cityID: parseInt(formik.values.cityID),
-          districtID: parseInt(formik.values.districtID),
-          isActive: formik.values.isActive,
-        }
-      );
-      console.log("Update response: ", response);
-      await fetchAtmData();
-      toast.success("ATM updated successfully.");
-      handleCloseUpdate();
-    } catch (atmPuterror) {
-      console.error(atmPuterror);
-      toast.error("Failed to update ATM.");
-    }
-  }; */
-
-  /*  const handleClose = () => {
-    setOpen(false);
-    resetForm();
-  }; */
-
-  /*   const handleCloseUpdate = () => {
-    setOpenUpdate(false);
-    resetForm();
-  }; */
 
   const handleOpenDialog = async (mode, atmToUpdate = null) => {
     setMode(mode);
@@ -220,14 +143,6 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
     }
     setOpen(true);
   };
-
-  /*   const handleOpenUpdate = async (atmToUpdate) => {
-    //await fetchCities();
-    //await fetchDistricts(atmToUpdate.cityID);
-    //formik.setValues(atmToUpdate);
-    setAtmToUpdate(atmToUpdate);
-    setOpenUpdate(true);
-  }; */
 
   return (
     <div>

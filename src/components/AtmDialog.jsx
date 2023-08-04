@@ -1,30 +1,20 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  styled,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   TextField,
-  Typography,
   FormControl,
   InputLabel,
   Select,
   Button,
   MenuItem,
-  Grid,
 } from "@mui/material";
 
 const CustomSelect = ({
@@ -89,8 +79,6 @@ const AtmDialog = ({
   fetchAtmData,
   setCities,
   setDistricts,
-  atmToUpdate,
-  setAtmToUpdate,
 }) => {
   const formik = useFormik({
     initialValues: initialValues,
@@ -164,8 +152,6 @@ const AtmDialog = ({
   const handleClose = () => {
     setOpen(false);
     resetForm();
-    //setAtmToUpdate(null);
-    //formik.setValues(initialValues); // initialValues to reset form
     fetchCities();
   };
 
