@@ -1,5 +1,4 @@
 import React from "react";
-import { ReactComponent as Logo } from "../layouts/sekerbank-logo.svg";
 
 const Footer = () => {
   return (
@@ -15,7 +14,11 @@ const Footer = () => {
       }}
     >
       <a href="https://www.sekerbank.com.tr">
-        <Logo alt="Şekerbank Logo" style={{ height: "60px", width: "auto" }} />
+        <img
+          src="/images/sekerbank-logo.svg"
+          alt="Şekerbank Logo"
+          style={{ height: "60px", width: "auto" }}
+        />
       </a>
     </footer>
   );
