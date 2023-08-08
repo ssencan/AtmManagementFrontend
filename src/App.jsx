@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "leaflet/dist/leaflet.css";
 import Home from "./pages/home";
 import About from "./pages/about";
+import Contact from "./pages/contact";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import MainLayout from "./layouts/MainLayout";
 
@@ -31,24 +32,13 @@ function App() {
       <ToastContainer />
       <ThemeProvider theme={theme}>
         <Router>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <MainLayout HeaderLink={true}>
-                  <Home />
-                </MainLayout>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <MainLayout HeaderLink={false}>
-                  <About />
-                </MainLayout>
-              }
-            />
-          </Routes>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </MainLayout>
         </Router>
       </ThemeProvider>
     </Fragment>
