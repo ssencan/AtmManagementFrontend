@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import { styled } from "@mui/system";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -16,6 +17,33 @@ import {
   Button,
   MenuItem,
 } from "@mui/material";
+
+const StyledDialogTitle = styled(DialogTitle)({
+  backgroundColor: "#006400",
+  color: "#FFFFFF",
+});
+
+const StyledDialogContent = styled(DialogContent)({
+  backgroundColor: "#F9F9F9",
+});
+
+const StyledButton = styled(Button)({
+  backgroundColor: "#006400",
+  color: "#FFFFFF",
+  "&:hover": {
+    backgroundColor: "#004F00",
+  },
+  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .8)",
+});
+
+const CancelButton = styled(Button)({
+  backgroundColor: "#ff0000",
+  color: "#FFFFFF",
+  "&:hover": {
+    backgroundColor: "#6f0000",
+  },
+  boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .8)",
+});
 
 const CustomSelect = ({
   label,
@@ -109,13 +137,13 @@ const AtmDialog = ({
 
   useEffect(() => {
     fetchCities();
-  }, []);
+  }, [fetchCities]);
 
   useEffect(() => {
     if (formik.values.cityID) {
       fetchDistricts(formik.values.cityID);
     }
-  }, [formik.values.cityID]);
+  }, [formik.values.cityID, fetchDistricts]);
 
   const getFormikData = () => ({
     atmName: formik.values.atmName,
@@ -172,8 +200,10 @@ const AtmDialog = ({
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{mode === "add" ? "Add New ATM" : "Update ATM"}</DialogTitle>
-      <DialogContent>
+      <StyledDialogTitle>
+        {mode === "add" ? "Add New ATM" : "Update ATM"}
+      </StyledDialogTitle>
+      <StyledDialogContent>
         <DialogContentText>Enter ATM details.</DialogContentText>
         <CustomTextField name="atmName" label="ATM Name" formik={formik} />
         <CustomTextField name="latitude" label="Latitude" formik={formik} />
@@ -208,14 +238,12 @@ const AtmDialog = ({
             </MenuItem>
           ))}
         </CustomSelect>
-      </DialogContent>
+      </StyledDialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={formik.handleSubmit} color="primary">
+        <CancelButton onClick={handleClose}>Cancel</CancelButton>
+        <StyledButton onClick={formik.handleSubmit}>
           {mode === "add" ? "Add" : "Update"}
-        </Button>
+        </StyledButton>
       </DialogActions>
     </Dialog>
   );

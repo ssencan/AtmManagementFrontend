@@ -5,7 +5,7 @@ import { Grid } from "@mui/material";
 import AtmTable from "../components/AtmTable";
 import AtmMap from "../components/AtmMap";
 
-const Home = () => {
+const AtmList = () => {
   const [atmData, setAtmData] = useState([]);
   const [hoveredAtmId, setHoveredAtmId] = useState(null);
 
@@ -41,4 +41,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default AtmList;

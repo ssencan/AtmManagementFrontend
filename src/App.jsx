@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "leaflet/dist/leaflet.css";
-import Home from "./pages/home";
+import AtmList from "./pages/atmList";
 import About from "./pages/about";
 import Contact from "./pages/contact";
+import Welcome from "./pages/welcome";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import MainLayout from "./layouts/MainLayout";
 
@@ -34,7 +35,8 @@ function App() {
         <Router>
           <MainLayout>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Welcome />} />
+              <Route path="/atmList" element={<AtmList />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
             </Routes>

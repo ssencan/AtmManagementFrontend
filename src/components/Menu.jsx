@@ -13,13 +13,14 @@ const StyledLink = styled(Link)({
 const StyledList = styled(Link)({
   color: "inherit",
   display: "flex",
+  whiteSpace: "nowrap",
   textDecoration: "none",
 });
 
 const Menu = () => {
   const location = useLocation();
   const menuItems = [
-    { path: "/", text: "Home" },
+    { path: "/atmList", text: "Atm List" },
     { path: "/about", text: "About" },
     { path: "/contact", text: "Contact" },
   ];
