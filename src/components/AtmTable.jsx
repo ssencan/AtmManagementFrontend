@@ -63,7 +63,7 @@ const AtmTable = ({ atmData, hoveredAtmId, setHoveredAtmId, fetchAtmData }) => {
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState("add");
+  const [mode, setMode] = useState();
   const [atmToUpdate, setAtmToUpdate] = useState({});
   const [initialValues, setInitialValues] = useState({
     id: "",
